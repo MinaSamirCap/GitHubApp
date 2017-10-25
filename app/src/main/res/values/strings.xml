@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">GitHubRepos</string>
+    <string name="search">Search</string>
+    <string name="name">Name:</string>
+    <string name="desc">Description:</string>
+    <string name="done">Done</string>
+    <string name="repo_validation_message">Please write repo name...</string>
+    <string name="no_repo">No repo with that name:</string>
+</resources>
