@@ -22,9 +22,9 @@ public class ApiInterfaces {
     }*/
 
     public interface GetOrgRepo {
-        @GET("/users/{repo_name}/repos?")
-        Observable<List<RepoModel>> getApiData(@Path(value = "repo_name", encoded = true) String repoName,
-                                               @Query("page") String page);
+        @GET(ApiUrls.REPO_URL)
+        Observable<List<RepoModel>> getApiData(@Path(value = ApiUrls.REPO_ORG_KEY, encoded = true) String repoName,
+                                               @Query(ApiUrls.PAGE_KEY) String page);
     }
 
     /*public interface FieldApi {

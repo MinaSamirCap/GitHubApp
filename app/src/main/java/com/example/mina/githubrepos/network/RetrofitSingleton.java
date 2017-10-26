@@ -45,7 +45,7 @@ public class RetrofitSingleton {
             * addCallAdapterFactory() — Adapter factory for supporting service method return types,
               add instance of RxJava2CallAdapterFactory for Rxjava 2 support.*/
             mInstance = new Retrofit.Builder()
-                    .baseUrl("https://api.github.com")
+                    .baseUrl(ApiUrls.BASE_URL)
                     .addConverterFactory(GsonConverterFactory.create())
                     .addCallAdapterFactory(RxJava2CallAdapterFactory.create()) // <- add this retrofit adapter for Rx
                     //.addCallAdapterFactory(RxJava2CallAdapterFactory.create()) /// way to implement Rx.. directly
