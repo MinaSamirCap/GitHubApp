@@ -1,15 +1,14 @@
 package com.example.mina.githubrepos.ui.activities;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
-
 import com.example.mina.githubrepos.R;
 import com.example.mina.githubrepos.models.RepoModel;
 import com.example.mina.githubrepos.network.ApiInterfaces;
@@ -17,11 +16,9 @@ import com.example.mina.githubrepos.network.RetrofitSingleton;
 import com.example.mina.githubrepos.ui.UiUtils;
 import com.example.mina.githubrepos.ui.adapters.RepoAdapter;
 import com.example.mina.githubrepos.ui.decoration.RepoDecoration;
-
+import com.example.mina.githubrepos.utils.Constants;
 import java.util.ArrayList;
 import java.util.List;
-
-import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
@@ -36,6 +33,7 @@ public class MainActivity extends AppCompatActivity implements RepoAdapter.RepoI
 
     private RecyclerView.Adapter adapter;
     private ArrayList<RepoModel> data = new ArrayList<>();
+
     private int pageNumber = 1;
     private int visibleItemCount;
     private int totalItemCount;
@@ -140,6 +138,8 @@ public class MainActivity extends AppCompatActivity implements RepoAdapter.RepoI
 
     @Override
     public void repoItemClicked(int position) {
-
+        Intent intent = new Intent(this, RepoDetailsActivity.class);
+        intent.putExtra(Constants.REPO_MODEL_KEY, data.get(position));
+        startActivity(intent);
     }
 }
