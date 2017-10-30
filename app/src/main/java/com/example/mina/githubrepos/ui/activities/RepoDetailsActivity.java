@@ -5,12 +5,20 @@ import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.mina.githubrepos.MyApplication;
 import com.example.mina.githubrepos.R;
 import com.example.mina.githubrepos.models.RepoModel;
 import com.example.mina.githubrepos.utils.Constants;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
+
+import javax.inject.Inject;
+
 public class RepoDetailsActivity extends AppCompatActivity {
+
+    @Inject
+    ArrayList<RepoModel> data;
 
     private TextView nameTextView, descriptionTextView, defaultBranchTextView,
             forkTextView, openIssueTextView, watchersTextView, sizeTextView, urlTextView;
@@ -21,7 +29,11 @@ public class RepoDetailsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_repo_details);
 
-        RepoModel repoModel = (RepoModel) getIntent().getExtras().getSerializable(Constants.REPO_MODEL_KEY);
+        ((MyApplication) getApplication()).getComponent().inject(this);
+
+
+        //RepoModel repoModel = (RepoModel) getIntent().getExtras().getSerializable(Constants.REPO_MODEL_KEY);
+        RepoModel repoModel = data.get(getIntent().getIntExtra(Constants.REPO_MODEL_POSITION_KEY, 0));
 
         nameTextView = (TextView) findViewById(R.id.name_value);
         nameTextView.setText(repoModel.getName());
@@ -33,23 +45,22 @@ public class RepoDetailsActivity extends AppCompatActivity {
         defaultBranchTextView.setText(repoModel.getDefaultBranch());
 
         forkTextView = (TextView) findViewById(R.id.forks_key);
-        forkTextView.setText(getString(R.string.forks)+ ": " + repoModel.getForks() + "");
+        forkTextView.setText(getString(R.string.forks) + ": " + repoModel.getForks() + "");
 
         openIssueTextView = (TextView) findViewById(R.id.open_issues_key);
-        openIssueTextView.setText(getString(R.string.open_issues)+ ": " + repoModel.getOpenIssues() + "");
+        openIssueTextView.setText(getString(R.string.open_issues) + ": " + repoModel.getOpenIssues() + "");
 
         watchersTextView = (TextView) findViewById(R.id.watchers_key);
-        watchersTextView.setText(getString(R.string.watchers)+ ": " + repoModel.getWatchers() + "");
+        watchersTextView.setText(getString(R.string.watchers) + ": " + repoModel.getWatchers() + "");
 
         sizeTextView = (TextView) findViewById(R.id.size_key);
-        sizeTextView.setText(getString(R.string.size)+ ": " + repoModel.getSize() + "");
+        sizeTextView.setText(getString(R.string.size) + ": " + repoModel.getSize() + "");
 
         urlTextView = (TextView) findViewById(R.id.url_value);
         urlTextView.setText(repoModel.getUrl());
 
         ownerImageView = (ImageView) findViewById(R.id.owner_avatar);
         Picasso.with(this).load(repoModel.getOwner().getAvatarUrl()).into(ownerImageView);
-
 
 
     }

@@ -7,4 +7,5 @@ package com.example.mina.githubrepos.utils;
 public class Constants {
 
     public static final String REPO_MODEL_KEY = "repoModel";
+    public static final String REPO_MODEL_POSITION_KEY = "repoPositionModel";
 }
