@@ -11,6 +11,7 @@
     <string name="owner">Owner</string>
     <string name="url">URL</string>
     <string name="done">Done</string>
+    <string name="success_login">Successfully logged in</string>
     <string name="repo_validation_message">Please write repo name...</string>
     <string name="no_repo">No repo with that name:</string>
 </resources>

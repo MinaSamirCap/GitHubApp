@@ -1,6 +1,7 @@
 package com.example.mina.githubrepos.ui.activities;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -14,6 +15,7 @@ import com.example.mina.githubrepos.MyApplication;
 import com.example.mina.githubrepos.R;
 import com.example.mina.githubrepos.models.RepoModel;
 import com.example.mina.githubrepos.network.ApiInterfaces;
+import com.example.mina.githubrepos.network.ApiUrls;
 import com.example.mina.githubrepos.network.RetrofitSingleton;
 import com.example.mina.githubrepos.ui.UiUtils;
 import com.example.mina.githubrepos.ui.adapters.RepoAdapter;
@@ -78,6 +80,8 @@ public class MainActivity extends AppCompatActivity implements RepoAdapter.RepoI
 
         Retrofit retrofit = RetrofitSingleton.getInstance();
         service = retrofit.create(ApiInterfaces.GetOrgRepo.class);
+
+        openGitHubLogin();
 
     }
 
@@ -160,5 +164,22 @@ public class MainActivity extends AppCompatActivity implements RepoAdapter.RepoI
                 }
             }
         });
+    }
+
+    private void openGitHubLogin() {
+        Intent intent = new Intent(Intent.ACTION_VIEW,
+                Uri.parse(ApiUrls.LOGIN_URL));
+        startActivity(intent);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        Uri uri = getIntent().getData();
+        if(uri != null && uri.toString().startsWith(ApiUrls.CALLBACK_IRL)){
+            String code = uri.getQueryParameter(ApiUrls.CODE_KEY);
+            UiUtils.loadSnackBar(getString(R.string.success_login), this);
+        }
     }
 }
