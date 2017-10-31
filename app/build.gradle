@@ -56,11 +56,15 @@ dependencies {
     compile 'com.squareup.retrofit2:adapter-rxjava2:2.3.0'
     compile 'com.squareup.okhttp3:logging-interceptor:3.5.0'
     compile 'com.squareup.retrofit2:converter-scalars:2.2.0'
+
+    //// images
     compile 'com.squareup.picasso:picasso:2.5.2'
+    compile 'com.makeramen:roundedimageview:2.3.0'
 
     //// daggar libs
     implementation 'com.google.dagger:dagger:2.0'   // daggar lib
-    annotationProcessor 'com.google.dagger:dagger-compiler:2.0' // daggar compiler that generate classes
+    annotationProcessor 'com.google.dagger:dagger-compiler:2.0'
+    // daggar compiler that generate classes
     implementation 'org.glassfish:javax.annotation:10.0-b28'    // dagger annotations
 
     testCompile 'junit:junit:4.12'

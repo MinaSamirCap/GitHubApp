@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">GitHubRepos</string>
+    <string name="app_name">GitHub Repos</string>
     <string name="search">Search</string>
     <string name="name">Name:</string>
     <string name="desc">Description:</string>
@@ -11,7 +11,16 @@
     <string name="owner">Owner</string>
     <string name="url">URL</string>
     <string name="done">Done</string>
+    <string name="login">Login</string>
+    <string name="search_repos">Search Repos</string>
     <string name="success_login">Successfully logged in</string>
+    <string name="success_load_profile">Successfully load profile</string>
     <string name="repo_validation_message">Please write repo name...</string>
     <string name="no_repo">No repo with that name:</string>
+    <string name="title_activity_main">MainActivity</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
 </resources>

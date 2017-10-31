@@ -2,25 +2,40 @@ package com.example.mina.githubrepos.ui.activities;
 
 import android.content.Intent;
 import android.net.Uri;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.support.design.widget.NavigationView;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.example.mina.githubrepos.MyApplication;
 import com.example.mina.githubrepos.R;
+import com.example.mina.githubrepos.models.AccessTokenModel;
 import com.example.mina.githubrepos.models.RepoModel;
+import com.example.mina.githubrepos.models.UserModel;
 import com.example.mina.githubrepos.network.ApiInterfaces;
 import com.example.mina.githubrepos.network.ApiUrls;
 import com.example.mina.githubrepos.network.RetrofitSingleton;
+import com.example.mina.githubrepos.network.RetrofitSingleton2;
 import com.example.mina.githubrepos.ui.UiUtils;
 import com.example.mina.githubrepos.ui.adapters.RepoAdapter;
 import com.example.mina.githubrepos.ui.decoration.RepoDecoration;
 import com.example.mina.githubrepos.utils.Constants;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,15 +48,18 @@ import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
 import retrofit2.Retrofit;
 
-public class MainActivity extends AppCompatActivity implements RepoAdapter.RepoItemCallback {
+public class MainActivity extends AppCompatActivity
+        implements NavigationView.OnNavigationItemSelectedListener, RepoAdapter.RepoItemCallback {
 
     @Inject
     ArrayList<RepoModel> data;
 
     private EditText repoEditText;
-    private Button searchButton;
+    private Button searchButton, loginButton;
     private RecyclerView recycleView;
     private ProgressBar progressBar;
+    private TextView userNameTextView, emailTextView;
+    private ImageView profileImageView;
 
     private RecyclerView.Adapter adapter;
 
@@ -53,7 +71,7 @@ public class MainActivity extends AppCompatActivity implements RepoAdapter.RepoI
     private int visibleThreshold = 4;
     private boolean loading = true;
 
-    private ApiInterfaces.GetOrgRepo service;
+    private ApiInterfaces service1, service2;
     private CompositeDisposable mCompositeDisposable = new CompositeDisposable();
 
     @Override
@@ -63,55 +81,72 @@ public class MainActivity extends AppCompatActivity implements RepoAdapter.RepoI
 
         ((MyApplication) getApplication()).getComponent().inject(this);
 
-        repoEditText = (EditText) findViewById(R.id.repo_edit_text);
-        searchButton = (Button) findViewById(R.id.search_button);
-        recycleView = (RecyclerView) findViewById(R.id.recycle_view);
-        progressBar = (ProgressBar) findViewById(R.id.progress_dialog);
-
-        searchButton.setOnClickListener(v -> searchButtonClicked());
-
-        adapter = new RepoAdapter(this, data, this);
-
-        recycleView.setLayoutManager(new LinearLayoutManager(this));
-        recycleView.setAdapter(adapter);
-        recycleView.addItemDecoration(new RepoDecoration(5));
-
+        initViews();
         addRecyclePaging();
 
         Retrofit retrofit = RetrofitSingleton.getInstance();
-        service = retrofit.create(ApiInterfaces.GetOrgRepo.class);
+        service1 = retrofit.create(ApiInterfaces.class);
 
-        openGitHubLogin();
 
     }
 
 
-    private void requestRepos() {
-        progressBar.setVisibility(View.VISIBLE);
-        Observable<List<RepoModel>> apiData = service.getApiData(repoEditText.getText().toString(), pageNumber + "");
-        apiData.subscribeOn(Schedulers.io()) // "work" on io thread
-                .observeOn(AndroidSchedulers.mainThread()) // "listen" on UIThread
-                .subscribe(this::handleResponse, this::handleError);
-        /*mCompositeDisposable.add(service.getApiData(repoEditText.getText().toString(), pageNumber + "")
-                .subscribeOn(Schedulers.io()) // "work" on io thread
-                .observeOn(AndroidSchedulers.mainThread()) // "listen" on UIThread
-                .subscribe(this::handleResponse, this::handleError)
-        );*/
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
     }
 
-    private void handleError(Throwable throwable) {
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
 
-    }
-
-    private void handleResponse(List<RepoModel> repoModels) {
-        if (repoModels.size() == 0 && pageNumber == 1) {
-            UiUtils.loadSnackBar(getString(R.string.no_repo) + " " + repoEditText.getText().toString(), this);
-        } else {
-            data.addAll(repoModels);
-            adapter.notifyDataSetChanged();
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
+            return true;
         }
 
-        progressBar.setVisibility(View.GONE);
+        return super.onOptionsItemSelected(item);
+    }
+
+    @SuppressWarnings("StatementWithEmptyBody")
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+        // Handle navigation view item clicks here.
+        int id = item.getItemId();
+
+        if (id == R.id.nav_camera) {
+            // Handle the camera action
+        } else if (id == R.id.nav_gallery) {
+
+        } else if (id == R.id.nav_slideshow) {
+
+        } else if (id == R.id.nav_manage) {
+
+        } else if (id == R.id.nav_share) {
+
+        } else if (id == R.id.nav_send) {
+
+        }
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
+    }
+
+
+    @Override
+    public void onBackPressed() {
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
     }
 
     @Override
@@ -120,6 +155,71 @@ public class MainActivity extends AppCompatActivity implements RepoAdapter.RepoI
         intent.putExtra(Constants.REPO_MODEL_KEY, data.get(position));
         intent.putExtra(Constants.REPO_MODEL_POSITION_KEY, position);
         startActivity(intent);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        Uri uri = getIntent().getData();
+        if (uri != null && uri.toString().startsWith(ApiUrls.CALLBACK_URL)) {
+            String code = uri.getQueryParameter(ApiUrls.CODE_KEY);
+            UiUtils.loadSnackBar(getString(R.string.success_login), this);
+            Retrofit retrofit = RetrofitSingleton2.getInstance();
+            service2 = retrofit.create(ApiInterfaces.class);
+
+            progressBar.setVisibility(View.VISIBLE);
+            Observable<AccessTokenModel> apiData = service2.
+                    getAccessToken(ApiUrls.GITHUB_CLIENT_ID, ApiUrls.GITHUB_CLIENT_SECRET, code);
+            apiData.subscribeOn(Schedulers.io()) // "work" on io thread
+                    .observeOn(AndroidSchedulers.mainThread()) // "listen" on UIThread
+                    .subscribe(this::handleAccessTokenResponse, this::handleError);
+        }
+    }
+
+    private void initViews() {
+
+        repoEditText = findViewById(R.id.repo_edit_text);
+        searchButton = findViewById(R.id.search_button);
+        loginButton = findViewById(R.id.login_button);
+
+        recycleView = findViewById(R.id.recycle_view);
+        progressBar = findViewById(R.id.progress_dialog);
+
+        searchButton.setOnClickListener(v -> searchButtonClicked());
+        loginButton.setOnClickListener(v -> openGitHubLogin());
+
+        /////// recycle and adapter
+        adapter = new RepoAdapter(this, data, this);
+        recycleView.setLayoutManager(new LinearLayoutManager(this));
+        recycleView.setAdapter(adapter);
+        recycleView.addItemDecoration(new RepoDecoration(5));
+
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
+
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+
+        userNameTextView = navigationView.getHeaderView(0).findViewById(R.id.user_name_text_view);
+        emailTextView = navigationView.getHeaderView(0).findViewById(R.id.email_text_view);
+        profileImageView = navigationView.getHeaderView(0).findViewById(R.id.profile_image_view);
+
+
+        /*FloatingActionButton fab =  findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+            }
+        });*/
     }
 
     private void searchButtonClicked() {
@@ -167,19 +267,54 @@ public class MainActivity extends AppCompatActivity implements RepoAdapter.RepoI
     }
 
     private void openGitHubLogin() {
-        Intent intent = new Intent(Intent.ACTION_VIEW,
-                Uri.parse(ApiUrls.LOGIN_URL));
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(ApiUrls.O_AUTH_URL));
         startActivity(intent);
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-        Uri uri = getIntent().getData();
-        if(uri != null && uri.toString().startsWith(ApiUrls.CALLBACK_IRL)){
-            String code = uri.getQueryParameter(ApiUrls.CODE_KEY);
-            UiUtils.loadSnackBar(getString(R.string.success_login), this);
-        }
+    private void requestRepos() {
+        progressBar.setVisibility(View.VISIBLE);
+        Observable<List<RepoModel>> apiData = service1.getRepoData(repoEditText.getText().toString(), pageNumber + "");
+        apiData.subscribeOn(Schedulers.io()) // "work" on io thread
+                .observeOn(AndroidSchedulers.mainThread()) // "listen" on UIThread
+                .subscribe(this::handleReposResponse, this::handleError);
+        /*mCompositeDisposable.add(service1.getApiData(repoEditText.getText().toString(), pageNumber + "")
+                .subscribeOn(Schedulers.io()) // "work" on io thread
+                .observeOn(AndroidSchedulers.mainThread()) // "listen" on UIThread
+                .subscribe(this::handleReposResponse, this::handleError)
+        );*/
     }
+
+    private void handleReposResponse(List<RepoModel> repoModels) {
+        if (repoModels.size() == 0 && pageNumber == 1) {
+            UiUtils.loadSnackBar(getString(R.string.no_repo) + " " + repoEditText.getText().toString(), this);
+        } else {
+            data.addAll(repoModels);
+            adapter.notifyDataSetChanged();
+        }
+
+        progressBar.setVisibility(View.GONE);
+    }
+
+    private void handleAccessTokenResponse(AccessTokenModel accessTokenModel) {
+        //UiUtils.loadSnackBar(accessTokenModel.getAccessToken(), this);
+        //progressBar.setVisibility(View.GONE);
+        Observable<UserModel> apiData = service1.getProfile(accessTokenModel.getAccessToken());
+        apiData.subscribeOn(Schedulers.io()) // "work" on io thread
+                .observeOn(AndroidSchedulers.mainThread()) // "listen" on UIThread
+                .subscribe(this::handleProfileResponse, this::handleError);
+    }
+
+    private void handleProfileResponse(UserModel userModel) {
+        progressBar.setVisibility(View.GONE);
+        UiUtils.loadSnackBar(getString(R.string.success_load_profile), this);
+        emailTextView.setText(userModel.getEmail());
+        userNameTextView.setText(userModel.getLogin());
+        Picasso.with(this).load(userModel.getAvatarUrl()).into(profileImageView);
+    }
+
+    private void handleError(Throwable throwable) {
+        UiUtils.loadSnackBar(throwable.getMessage(), this);
+        progressBar.setVisibility(View.GONE);
+    }
+
 }
