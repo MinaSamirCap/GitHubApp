@@ -42,6 +42,9 @@ public interface ApiInterfaces {
     @GET(ApiUrls.PROFILE_URL)
     Observable<UserModel> getProfile(@Query(ApiUrls.ACCESS_TOKEN_KEY) String accessToken);
 
+    @GET(ApiUrls.USER_PRIVATE_REPOS_URL)
+    Observable<List<RepoModel>> getPrivateRepos(@Query(ApiUrls.ACCESS_TOKEN_KEY) String accessToken);
+
     /*public interface FieldApi {
         @GET(ApiUrls.API_URL + ApiUrls.FIELD_URL)
         Call<String> getApiData();

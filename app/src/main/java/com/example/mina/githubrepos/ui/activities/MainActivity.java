@@ -3,8 +3,6 @@ package com.example.mina.githubrepos.ui.activities;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -41,6 +39,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
+
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
@@ -71,6 +70,8 @@ public class MainActivity extends AppCompatActivity
     private boolean loading = true;
 
     private boolean comeFromBrowser = true;
+    private boolean loggedIn = false;
+    private String accessToken;
 
     private ApiInterfaces service1, service2;
     private CompositeDisposable mCompositeDisposable = new CompositeDisposable();
@@ -120,23 +121,28 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
-
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
+        switch (id) {
+            case R.id.nav_my_repos:
+                validateLogin();
+                break;
+            case R.id.nav_share:
+                break;
+            case R.id.nav_report_bug:
+                break;
 
         }
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void validateLogin() {
+        if (loggedIn) {
+            getUserPrivateRepos();
+        } else {
+            UiUtils.loadSnackBar(getString(R.string.login_first), this);
+        }
     }
 
 
@@ -275,6 +281,21 @@ public class MainActivity extends AppCompatActivity
         comeFromBrowser = true;
     }
 
+    private void getUserPrivateRepos() {
+        progressBar.setVisibility(View.VISIBLE);
+        Observable<List<RepoModel>> apiData = service1.getPrivateRepos(accessToken);
+        apiData.subscribeOn(Schedulers.io()) // "work" on io thread
+                .observeOn(AndroidSchedulers.mainThread()) // "listen" on UIThread
+                .subscribe(this::handlePrivateRepoResponse, this::handleError);
+    }
+
+    private void handlePrivateRepoResponse(List<RepoModel> repoModels) {
+        data.addAll(repoModels);
+        adapter.notifyDataSetChanged();
+        progressBar.setVisibility(View.GONE);
+    }
+
+
     private void requestRepos() {
         progressBar.setVisibility(View.VISIBLE);
         Observable<List<RepoModel>> apiData = service1.getRepoData(repoEditText.getText().toString(), pageNumber + "");
@@ -302,7 +323,8 @@ public class MainActivity extends AppCompatActivity
     private void handleAccessTokenResponse(AccessTokenModel accessTokenModel) {
         //UiUtils.loadSnackBar(accessTokenModel.getAccessToken(), this);
         //progressBar.setVisibility(View.GONE);
-        Observable<UserModel> apiData = service1.getProfile(accessTokenModel.getAccessToken());
+        accessToken = accessTokenModel.getAccessToken();
+        Observable<UserModel> apiData = service1.getProfile(accessToken);
         apiData.subscribeOn(Schedulers.io()) // "work" on io thread
                 .observeOn(AndroidSchedulers.mainThread()) // "listen" on UIThread
                 .subscribe(this::handleProfileResponse, this::handleError);
@@ -310,12 +332,12 @@ public class MainActivity extends AppCompatActivity
 
     private void handleProfileResponse(UserModel userModel) {
         progressBar.setVisibility(View.GONE);
-
+        loggedIn = true;
         UiUtils.loadSnackBar(getString(R.string.success_load_profile), this);
         emailTextView.setText(userModel.getEmail());
         userNameTextView.setText(userModel.getName());
         Picasso.with(this).load(userModel.getAvatarUrl()).into(profileImageView);
-        profileImageView.setOnClickListener(view-> ProfileActivity.startActivity(this, userModel));
+        profileImageView.setOnClickListener(view -> ProfileActivity.startActivity(this, userModel));
     }
 
 
