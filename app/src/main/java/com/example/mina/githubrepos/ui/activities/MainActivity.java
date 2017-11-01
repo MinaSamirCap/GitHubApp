@@ -41,7 +41,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
-
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
@@ -70,6 +69,8 @@ public class MainActivity extends AppCompatActivity
     private int previousTotal = 0;
     private int visibleThreshold = 4;
     private boolean loading = true;
+
+    private boolean comeFromBrowser = true;
 
     private ApiInterfaces service1, service2;
     private CompositeDisposable mCompositeDisposable = new CompositeDisposable();
@@ -162,7 +163,7 @@ public class MainActivity extends AppCompatActivity
         super.onResume();
 
         Uri uri = getIntent().getData();
-        if (uri != null && uri.toString().startsWith(ApiUrls.CALLBACK_URL)) {
+        if (uri != null && uri.toString().startsWith(ApiUrls.CALLBACK_URL) && comeFromBrowser) {
             String code = uri.getQueryParameter(ApiUrls.CODE_KEY);
             UiUtils.loadSnackBar(getString(R.string.success_login), this);
             Retrofit retrofit = RetrofitSingleton2.getInstance();
@@ -174,6 +175,8 @@ public class MainActivity extends AppCompatActivity
             apiData.subscribeOn(Schedulers.io()) // "work" on io thread
                     .observeOn(AndroidSchedulers.mainThread()) // "listen" on UIThread
                     .subscribe(this::handleAccessTokenResponse, this::handleError);
+
+            comeFromBrowser = false;
         }
     }
 
@@ -269,6 +272,7 @@ public class MainActivity extends AppCompatActivity
     private void openGitHubLogin() {
         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(ApiUrls.O_AUTH_URL));
         startActivity(intent);
+        comeFromBrowser = true;
     }
 
     private void requestRepos() {
@@ -306,11 +310,14 @@ public class MainActivity extends AppCompatActivity
 
     private void handleProfileResponse(UserModel userModel) {
         progressBar.setVisibility(View.GONE);
+
         UiUtils.loadSnackBar(getString(R.string.success_load_profile), this);
         emailTextView.setText(userModel.getEmail());
-        userNameTextView.setText(userModel.getLogin());
+        userNameTextView.setText(userModel.getName());
         Picasso.with(this).load(userModel.getAvatarUrl()).into(profileImageView);
+        profileImageView.setOnClickListener(view-> ProfileActivity.startActivity(this, userModel));
     }
+
 
     private void handleError(Throwable throwable) {
         UiUtils.loadSnackBar(throwable.getMessage(), this);

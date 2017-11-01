@@ -34,6 +34,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".ui.activities.RepoDetailsActivity" />
+        <activity android:name=".ui.activities.ProfileActivity"></activity>
     </application>
 
 </manifest>

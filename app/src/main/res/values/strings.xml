@@ -17,7 +17,16 @@
     <string name="success_load_profile">Successfully load profile</string>
     <string name="repo_validation_message">Please write repo name...</string>
     <string name="no_repo">No repo with that name:</string>
-    <string name="title_activity_main">MainActivity</string>
+
+    <string name="public_repos">public repos:</string>
+    <string name="public_gists">public gists:</string>
+    <string name="followers">followers:</string>
+    <string name="following">following:</string>
+    <string name="created_at">created at:</string>
+    <string name="updated_at">last update:</string>
+    <string name="id">ID/</string>
+
+
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
