@@ -3,7 +3,6 @@ package com.example.mina.githubrepos.ui.viewholders;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
-
 import com.example.mina.githubrepos.R;
 
 /**

@@ -5,11 +5,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import com.example.mina.githubrepos.R;
 import com.example.mina.githubrepos.models.RepoModel;
 import com.example.mina.githubrepos.ui.viewholders.RepoViewHolder;
-
 import java.util.ArrayList;
 
 /**
@@ -18,9 +16,8 @@ import java.util.ArrayList;
 
 public class RepoAdapter extends RecyclerView.Adapter<RepoViewHolder> {
 
-
-    private ArrayList<RepoModel> data;
     private Context context;
+    private ArrayList<RepoModel> data;
     private RepoItemCallback repoItemCallback;
 
     public RepoAdapter(Context context, ArrayList<RepoModel> data, RepoItemCallback repoItemCallback) {
@@ -42,12 +39,8 @@ public class RepoAdapter extends RecyclerView.Adapter<RepoViewHolder> {
 
         holder.nameTextView.setText(data.get(position).getName());
         holder.descriptionTextView.setText(data.get(position).getDescription());
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                repoItemCallback.repoItemClicked(holder.getAdapterPosition());
-            }
-        });
+        holder.itemView.setOnClickListener(v ->
+                repoItemCallback.repoItemClicked(holder.getAdapterPosition()));
     }
 
     @Override

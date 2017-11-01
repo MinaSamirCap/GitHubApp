@@ -22,7 +22,7 @@ public class MyApplication extends Application {
 
         component = DaggerRepoComponent
                 .builder()
-                .repoListModel(new RepoListModel(new ArrayList<RepoModel>())).build();
+                .repoListModel(new RepoListModel(new ArrayList<>())).build();
     }
 
     public RepoComponent getComponent(){

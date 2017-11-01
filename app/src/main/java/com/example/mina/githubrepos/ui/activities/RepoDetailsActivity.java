@@ -4,7 +4,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.example.mina.githubrepos.MyApplication;
 import com.example.mina.githubrepos.R;
 import com.example.mina.githubrepos.models.RepoModel;
@@ -20,20 +19,25 @@ public class RepoDetailsActivity extends AppCompatActivity {
     @Inject
     ArrayList<RepoModel> data;
 
-    private TextView nameTextView, descriptionTextView, defaultBranchTextView,
-            forkTextView, openIssueTextView, watchersTextView, sizeTextView, urlTextView;
-    private ImageView ownerImageView;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_repo_details);
 
         ((MyApplication) getApplication()).getComponent().inject(this);
-
-
-        //RepoModel repoModel = (RepoModel) getIntent().getExtras().getSerializable(Constants.REPO_MODEL_KEY);
         RepoModel repoModel = data.get(getIntent().getIntExtra(Constants.REPO_MODEL_POSITION_KEY, 0));
+
+        initViews(repoModel);
+
+
+    }
+
+    private void initViews(RepoModel repoModel) {
+
+        ImageView ownerImageView;
+
+        TextView nameTextView, descriptionTextView, defaultBranchTextView,
+                forkTextView, openIssueTextView, watchersTextView, sizeTextView, urlTextView;
 
         nameTextView = (TextView) findViewById(R.id.name_value);
         nameTextView.setText(repoModel.getName());
@@ -61,7 +65,5 @@ public class RepoDetailsActivity extends AppCompatActivity {
 
         ownerImageView = (ImageView) findViewById(R.id.owner_avatar);
         Picasso.with(this).load(repoModel.getOwner().getAvatarUrl()).into(ownerImageView);
-
-
     }
 }

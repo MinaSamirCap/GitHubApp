@@ -58,7 +58,6 @@ public class MainActivity extends AppCompatActivity
     private ProgressBar progressBar;
     private TextView userNameTextView, emailTextView;
     private ImageView profileImageView;
-
     private RecyclerView.Adapter adapter;
 
     private int pageNumber = 1;
@@ -71,6 +70,7 @@ public class MainActivity extends AppCompatActivity
 
     private boolean comeFromBrowser = true;
     private boolean loggedIn = false;
+    private boolean enablePaging = true;
     private String accessToken;
 
     private ApiInterfaces service1, service2;
@@ -136,15 +136,6 @@ public class MainActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
-
-    private void validateLogin() {
-        if (loggedIn) {
-            getUserPrivateRepos();
-        } else {
-            UiUtils.loadSnackBar(getString(R.string.login_first), this);
-        }
-    }
-
 
     @Override
     public void onBackPressed() {
@@ -231,17 +222,6 @@ public class MainActivity extends AppCompatActivity
         });*/
     }
 
-    private void searchButtonClicked() {
-        if (!repoEditText.getText().toString().equals("")) {
-            pageNumber = 1;
-            data.clear();
-            requestRepos();
-        } else {
-            UiUtils.loadSnackBar(getString(R.string.repo_validation_message), MainActivity.this);
-        }
-
-    }
-
     private void addRecyclePaging() {
         recycleView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -266,13 +246,35 @@ public class MainActivity extends AppCompatActivity
                 if (!loading && (totalItemCount - visibleItemCount)
                         <= (firstVisibleItem + visibleThreshold)) {
                     // End has been reached
-                    pageNumber++;
-                    requestRepos();
+                    if (enablePaging) {
+                        pageNumber++;
+                        requestRepos();
+                    }
 
                     loading = true;
                 }
             }
         });
+    }
+
+    private void searchButtonClicked() {
+        enablePaging = true;
+        if (!repoEditText.getText().toString().equals("")) {
+            pageNumber = 1;
+            data.clear();
+            requestRepos();
+        } else {
+            UiUtils.loadSnackBar(getString(R.string.repo_validation_message), MainActivity.this);
+        }
+
+    }
+
+    private void validateLogin() {
+        if (loggedIn) {
+            getUserPrivateRepos();
+        } else {
+            UiUtils.loadSnackBar(getString(R.string.login_first), this);
+        }
     }
 
     private void openGitHubLogin() {
@@ -282,19 +284,15 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void getUserPrivateRepos() {
+        enablePaging = false;
         progressBar.setVisibility(View.VISIBLE);
+        data.clear();
+        repoEditText.setText("");
         Observable<List<RepoModel>> apiData = service1.getPrivateRepos(accessToken);
         apiData.subscribeOn(Schedulers.io()) // "work" on io thread
                 .observeOn(AndroidSchedulers.mainThread()) // "listen" on UIThread
                 .subscribe(this::handlePrivateRepoResponse, this::handleError);
     }
-
-    private void handlePrivateRepoResponse(List<RepoModel> repoModels) {
-        data.addAll(repoModels);
-        adapter.notifyDataSetChanged();
-        progressBar.setVisibility(View.GONE);
-    }
-
 
     private void requestRepos() {
         progressBar.setVisibility(View.VISIBLE);
@@ -340,6 +338,11 @@ public class MainActivity extends AppCompatActivity
         profileImageView.setOnClickListener(view -> ProfileActivity.startActivity(this, userModel));
     }
 
+    private void handlePrivateRepoResponse(List<RepoModel> repoModels) {
+        data.addAll(repoModels);
+        adapter.notifyDataSetChanged();
+        progressBar.setVisibility(View.GONE);
+    }
 
     private void handleError(Throwable throwable) {
         UiUtils.loadSnackBar(throwable.getMessage(), this);

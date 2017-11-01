@@ -6,26 +6,29 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.example.mina.githubrepos.R;
 import com.example.mina.githubrepos.models.UserModel;
+import com.example.mina.githubrepos.utils.Constants;
 import com.squareup.picasso.Picasso;
 
 public class ProfileActivity extends AppCompatActivity {
-
-    private static String USER_MODEL_KEY = "userModelKey";
-
-    private TextView bioTextView, loginNameTextView, idTextView, urlTextView, htmlUrlTextView,
-            nameTextView, emailTextView, publicReposTextView, publicGistsTextView,
-            followersTextView, followingTextView, createdAtTextView, updatedAtTextView;
-    private ImageView profileImageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
-        UserModel userModel = (UserModel) getIntent().getExtras().getSerializable(USER_MODEL_KEY);
+        UserModel userModel = (UserModel) getIntent().getExtras().getSerializable(Constants.USER_MODEL_KEY);
+        initViews(userModel);
+    }
+
+    private void initViews(UserModel userModel) {
+
+        ImageView profileImageView;
+
+        TextView bioTextView, loginNameTextView, idTextView, urlTextView, htmlUrlTextView,
+                nameTextView, emailTextView, publicReposTextView, publicGistsTextView,
+                followersTextView, followingTextView, createdAtTextView, updatedAtTextView;
 
         profileImageView = findViewById(R.id.profile_image_view);
         Picasso.with(this).load(userModel.getAvatarUrl()).into(profileImageView);
@@ -73,7 +76,7 @@ public class ProfileActivity extends AppCompatActivity {
 
     public static void startActivity(Activity activity, UserModel userModel) {
         Intent intent = new Intent(activity, ProfileActivity.class);
-        intent.putExtra(USER_MODEL_KEY, userModel);
+        intent.putExtra(Constants.USER_MODEL_KEY, userModel);
         activity.startActivity(intent);
     }
 }

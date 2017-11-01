@@ -8,4 +8,6 @@ public class Constants {
 
     public static final String REPO_MODEL_KEY = "repoModel";
     public static final String REPO_MODEL_POSITION_KEY = "repoPositionModel";
+    public static final String USER_MODEL_KEY = "userModelKey";
+
 }
