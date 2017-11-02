@@ -26,6 +26,6 @@ public class ApiUrls {
     public static final String USER_PRIVATE_REPOS_URL = "/user/repos?";
     public static final String ACCESS_TOKEN_URL = "login/oauth/access_token?";
     public static final String O_AUTH_URL = "https://github.com/login/oauth/authorize" +
-            "?scope=user:email&client_id=" + GITHUB_CLIENT_ID + "&redirect_uri=" + CALLBACK_URL;
+            "?scope=user:email repo&client_id=" + GITHUB_CLIENT_ID + "&redirect_uri=" + CALLBACK_URL;
 
 }
