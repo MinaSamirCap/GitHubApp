@@ -224,6 +224,14 @@ public class MainActivity extends AppCompatActivity
         });*/
     }
 
+    private void profileImageClicked() {
+        if (loggedIn) {
+            ProfileActivity.startActivity(this, userModel);
+        } else {
+            UiUtils.loadSnackBar(getString(R.string.login_first), this);
+        }
+    }
+
     private void addRecyclePaging() {
         recycleView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -353,14 +361,6 @@ public class MainActivity extends AppCompatActivity
         userNameTextView.setText(userModel.getName());
         Picasso.with(this).load(userModel.getAvatarUrl()).into(profileImageView);
 
-    }
-
-    private void profileImageClicked() {
-        if (loggedIn) {
-            ProfileActivity.startActivity(this, userModel);
-        } else {
-            UiUtils.loadSnackBar(getString(R.string.login_first), this);
-        }
     }
 
     private void handlePrivateRepoResponse(List<RepoModel> repoModels) {
