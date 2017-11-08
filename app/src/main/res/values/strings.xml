@@ -37,4 +37,5 @@
     <string name="communicate">Communicate</string>
     <string name="share">Share</string>
     <string name="login_first">Please login first</string>
+    <string name="logout">Logout</string>
 </resources>

@@ -19,6 +19,7 @@ public class ProfileActivity extends AppCompatActivity {
         setContentView(R.layout.activity_profile);
 
         UserModel userModel = (UserModel) getIntent().getExtras().getSerializable(Constants.USER_MODEL_KEY);
+
         initViews(userModel);
     }
 

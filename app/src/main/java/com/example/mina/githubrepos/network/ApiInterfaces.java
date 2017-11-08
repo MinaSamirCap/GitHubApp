@@ -27,7 +27,6 @@ public interface ApiInterfaces {
         Call<String> getApiData(@Body String data);
     }*/
 
-
     @GET(ApiUrls.REPO_URL)
     Observable<List<RepoModel>> getRepoData(@Path(value = ApiUrls.REPO_ORG_KEY, encoded = true) String repoName,
                                             @Query(ApiUrls.PAGE_KEY) String page);
@@ -44,17 +43,5 @@ public interface ApiInterfaces {
 
     @GET(ApiUrls.USER_PRIVATE_REPOS_URL)
     Observable<List<RepoModel>> getPrivateRepos(@Query(ApiUrls.ACCESS_TOKEN_KEY) String accessToken);
-
-    /*public interface FieldApi {
-        @GET(ApiUrls.API_URL + ApiUrls.FIELD_URL)
-        Call<String> getApiData();
-    }
-
-    public interface UploadApi {
-        @Multipart
-        @POST(ApiUrls.API_URL + ApiUrls.UPLOAD_IMAGE_URL)
-        Call<String> uploadImage(@Query(ApiUrls.IMAGE_TYPE_KEY) String imageType,
-                                 @Part MultipartBody.Part file);
-    }*/
 
 }

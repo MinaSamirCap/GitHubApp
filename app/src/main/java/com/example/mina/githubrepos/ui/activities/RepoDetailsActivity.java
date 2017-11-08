@@ -9,9 +9,7 @@ import com.example.mina.githubrepos.R;
 import com.example.mina.githubrepos.models.RepoModel;
 import com.example.mina.githubrepos.utils.Constants;
 import com.squareup.picasso.Picasso;
-
 import java.util.ArrayList;
-
 import javax.inject.Inject;
 
 public class RepoDetailsActivity extends AppCompatActivity {
@@ -25,6 +23,7 @@ public class RepoDetailsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_repo_details);
 
         ((MyApplication) getApplication()).getComponent().inject(this);
+
         RepoModel repoModel = data.get(getIntent().getIntExtra(Constants.REPO_MODEL_POSITION_KEY, 0));
 
         initViews(repoModel);

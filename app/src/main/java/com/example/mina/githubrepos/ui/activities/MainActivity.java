@@ -3,6 +3,7 @@ package com.example.mina.githubrepos.ui.activities;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -75,6 +76,7 @@ public class MainActivity extends AppCompatActivity
 
     private ApiInterfaces service1, service2;
     private CompositeDisposable mCompositeDisposable = new CompositeDisposable();
+    private UserModel userModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -125,10 +127,10 @@ public class MainActivity extends AppCompatActivity
             case R.id.nav_my_repos:
                 validateLogin();
                 break;
-            case R.id.nav_share:
+            /*case R.id.nav_share:
                 break;
             case R.id.nav_report_bug:
-                break;
+                break;*/
 
         }
 
@@ -187,7 +189,7 @@ public class MainActivity extends AppCompatActivity
         progressBar = findViewById(R.id.progress_dialog);
 
         searchButton.setOnClickListener(v -> searchButtonClicked());
-        loginButton.setOnClickListener(v -> openGitHubLogin());
+        loginButton.setOnClickListener(v -> loginButtonClicked());
 
         /////// recycle and adapter
         adapter = new RepoAdapter(this, data, this);
@@ -211,7 +213,7 @@ public class MainActivity extends AppCompatActivity
         emailTextView = navigationView.getHeaderView(0).findViewById(R.id.email_text_view);
         profileImageView = navigationView.getHeaderView(0).findViewById(R.id.profile_image_view);
 
-
+        profileImageView.setOnClickListener(view -> profileImageClicked());
         /*FloatingActionButton fab =  findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -267,6 +269,18 @@ public class MainActivity extends AppCompatActivity
             UiUtils.loadSnackBar(getString(R.string.repo_validation_message), MainActivity.this);
         }
 
+    }
+
+    private void loginButtonClicked() {
+        if (loggedIn) {
+            loginButton.setText(getString(R.string.login));
+            loggedIn = false;
+            profileImageView.setImageDrawable(ContextCompat.getDrawable(this, R.mipmap.ic_launcher));
+            userNameTextView.setText("");
+            emailTextView.setText("");
+        } else {
+            openGitHubLogin();
+        }
     }
 
     private void validateLogin() {
@@ -329,13 +343,24 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void handleProfileResponse(UserModel userModel) {
+        this.userModel = userModel;
         progressBar.setVisibility(View.GONE);
         loggedIn = true;
+        loginButton.setText(getString(R.string.logout));
+
         UiUtils.loadSnackBar(getString(R.string.success_load_profile), this);
         emailTextView.setText(userModel.getEmail());
         userNameTextView.setText(userModel.getName());
         Picasso.with(this).load(userModel.getAvatarUrl()).into(profileImageView);
-        profileImageView.setOnClickListener(view -> ProfileActivity.startActivity(this, userModel));
+
+    }
+
+    private void profileImageClicked() {
+        if (loggedIn) {
+            ProfileActivity.startActivity(this, userModel);
+        } else {
+            UiUtils.loadSnackBar(getString(R.string.login_first), this);
+        }
     }
 
     private void handlePrivateRepoResponse(List<RepoModel> repoModels) {

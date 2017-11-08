@@ -39,8 +39,7 @@ public class RepoAdapter extends RecyclerView.Adapter<RepoViewHolder> {
 
         holder.nameTextView.setText(data.get(position).getName());
         holder.descriptionTextView.setText(data.get(position).getDescription());
-        holder.itemView.setOnClickListener(v ->
-                repoItemCallback.repoItemClicked(holder.getAdapterPosition()));
+        holder.itemView.setOnClickListener(v -> repoItemCallback.repoItemClicked(holder.getAdapterPosition()));
     }
 
     @Override

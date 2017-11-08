@@ -12,7 +12,7 @@
 
     </group>
 
-    <item android:title="@string/communicate">
+    <!--<item android:title="@string/communicate">
         <menu>
             <item
                 android:id="@+id/nav_share"
@@ -23,6 +23,6 @@
                 android:icon="@drawable/ic_bug_report_black_24dp"
                 android:title="@string/report_bug" />
         </menu>
-    </item>
+    </item>-->
 
 </menu>
