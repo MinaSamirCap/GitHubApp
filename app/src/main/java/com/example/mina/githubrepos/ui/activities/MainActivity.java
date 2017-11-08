@@ -75,7 +75,7 @@ public class MainActivity extends AppCompatActivity
     private String accessToken;
 
     private ApiInterfaces service1, service2;
-    private CompositeDisposable mCompositeDisposable = new CompositeDisposable();
+    //private CompositeDisposable mCompositeDisposable = new CompositeDisposable();
     private UserModel userModel;
 
     @Override
